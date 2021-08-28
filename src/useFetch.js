@@ -1,19 +1,33 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { paginate } from './utils'
-const url = 'https://api.github.com/users/jadijadi/followers?per_page=100'
+import { useGlobalContext } from './context'
 
 export const useFetch = () => {
-  const [loading, setLoading] = useState(true)
-  const [data, setData] = useState([])
-
-  const fetchData = async () => {
-    const response = await fetch(url)
-    const data = await response.json()
-    setData(paginate(data))
-    setLoading(false)
-  }
+  const { username, setData, setIsLoading, setUserNotFound, setNoFollowers } =
+    useGlobalContext()
   useEffect(() => {
-    fetchData()
-  }, [])
-  return { loading, data }
+    const fetchData = async (url) => {
+      const response = await fetch(url)
+
+      if (!response.ok) {
+        setUserNotFound(true)
+        setNoFollowers(false) // reset to initial
+      } else {
+        const data = await response.json()
+        if (data.length !== 0) {
+          setData(paginate(data))
+          setIsLoading(false)
+          // reset to initial
+          setUserNotFound(false)
+          setNoFollowers(false)
+        } else {
+          setNoFollowers(true)
+          setUserNotFound(false) // reset to initial
+        }
+      }
+    }
+
+    const url = `https://api.github.com/users/${username}/followers?per_page=100`
+    fetchData(url)
+  }, [username])
 }
