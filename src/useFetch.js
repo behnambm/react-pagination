@@ -5,6 +5,7 @@ import { useGlobalContext } from './context'
 export const useFetch = () => {
   const { username, setData, setIsLoading, setUserNotFound, setNoFollowers } =
     useGlobalContext()
+
   useEffect(() => {
     const fetchData = async (url) => {
       const response = await fetch(url)
@@ -29,5 +30,5 @@ export const useFetch = () => {
 
     const url = `https://api.github.com/users/${username}/followers?per_page=96`
     fetchData(url)
-  }, [username])
+  }, [username, setData, setIsLoading, setUserNotFound, setNoFollowers])
 }
