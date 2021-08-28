@@ -27,7 +27,7 @@ export const useFetch = () => {
       }
     }
 
-    const url = `https://api.github.com/users/${username}/followers?per_page=100`
+    const url = `https://api.github.com/users/${username}/followers?per_page=96`
     fetchData(url)
   }, [username])
 }
